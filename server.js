@@ -30,19 +30,35 @@ app.use(cookieParser());
 
 app.use("/api/auth", authRoutes);
 
-app.get("/api/Notes/GetAllModules", async (req, res) => {
-
+app.post("/api/notes/getSelectedModules", async (req, res) => {
     try {
-        var result = await Notes.find({}); // ✅ Use `await` to get actual data
-        console.log("✅ Notes fetched:", result);
+        const SubjectNumber = (req.body.SubjectNumber)
+        const Sem = (req.body.Sem)
+
         
-        res.status(200).json(result); // ✅ Send JSON response properly
+        // ✅ Validate input
+        if (!SubjectNumber || !Sem) {
+            return res.status(400).json({ error: "SubjectNumber and Sem are required" });
+        }
+
+        console.log(`📢 Fetching notes for SubjectNumber: ${typeof(SubjectNumber)}, Sem: ${typeof(Sem)}`);
+
+        // ✅ Use `find()` if multiple modules exist, else `findOne()`
+        const result = await Notes.findOne({SubjectNumber:SubjectNumber,Sem:Sem });
+
+        console.log(result)
+
+        if (!result || result.length === 0) {
+            return res.status(404).json({ message: "No notes found" });
+        }
+
+        console.log("✅ Notes fetched:", result);
+        res.status(200).json(result);
     } catch (error) {
         console.error("❌ Error fetching Notes:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
-
 
 
 
