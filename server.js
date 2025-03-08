@@ -35,15 +35,10 @@ app.post("/api/notes/getSelectedModules", async (req, res) => {
         const SubjectNumber = (req.body.SubjectNumber)
         const Sem = (req.body.Sem)
 
-        
-        // ✅ Validate input
         if (!SubjectNumber || !Sem) {
             return res.status(400).json({ error: "SubjectNumber and Sem are required" });
         }
 
-        console.log(`📢 Fetching notes for SubjectNumber: ${typeof(SubjectNumber)}, Sem: ${typeof(Sem)}`);
-
-        // ✅ Use `find()` if multiple modules exist, else `findOne()`
         const result = await Notes.findOne({SubjectNumber:SubjectNumber,Sem:Sem });
 
         console.log(result)
@@ -52,10 +47,10 @@ app.post("/api/notes/getSelectedModules", async (req, res) => {
             return res.status(404).json({ message: "No notes found" });
         }
 
-        console.log("✅ Notes fetched:", result);
+        console.log("Notes fetched here :", result);
         res.status(200).json(result);
     } catch (error) {
-        console.error("❌ Error fetching Notes:", error);
+        console.error("Error fetching Notes:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
