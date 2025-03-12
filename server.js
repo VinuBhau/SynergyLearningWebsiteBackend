@@ -8,6 +8,7 @@ const cors = require('cors');
 const User = require("./models/user.models.js")
 const Payment = require('./models/payment.models.js');
 const Notes = require('./models/notes.models.js')
+const Video = require('./models/Videos.models.js')
 
 dotenv.config();
 
@@ -35,9 +36,12 @@ app.post("/api/notes/getSelectedModules", async (req, res) => {
         const SubjectNumber = (req.body.SubjectNumber)
         const Sem = (req.body.Sem)
 
+        
         if (!SubjectNumber || !Sem) {
             return res.status(400).json({ error: "SubjectNumber and Sem are required" });
         }
+
+        console.log(`Fetching notes for SubjectNumber: ${typeof(SubjectNumber)}, Sem: ${typeof(Sem)}`);
 
         const result = await Notes.findOne({SubjectNumber:SubjectNumber,Sem:Sem });
 
@@ -47,13 +51,32 @@ app.post("/api/notes/getSelectedModules", async (req, res) => {
             return res.status(404).json({ message: "No notes found" });
         }
 
-        console.log("Notes fetched here :", result);
+        console.log(" Notes fetched:", result);
         res.status(200).json(result);
     } catch (error) {
-        console.error("Error fetching Notes:", error);
+        console.error(" Error fetching Notes:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
+
+app.get("/api/sessions", async (req, res) => {
+    try {
+        const videos = await Video.find({})
+
+        if (videos.length === 0) {
+            return res.status(404).json({ message: "No videos found" });
+        }
+
+        res.status(200).json(videos);
+        console.log(`Fetched ${videos.length} videos`);
+
+    } catch (error) {
+        console.error("Error fetching sessions:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
 
 
 
