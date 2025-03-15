@@ -31,6 +31,20 @@ app.use(cookieParser());
 
 app.use("/api/auth", authRoutes);
 
+app.get("/api/getToken", async (req, res) => {
+    try {
+        const token = req.cookies.jwt;
+        console.log("Token:", token);
+        if (!token) {
+            return res.status(401).json({ error: "Unauthorized" });
+        }
+        res.status(200).json({token:token });
+    } catch (error) {
+        console.error("Error fetching token:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+})
+
 app.post("/api/notes/getSelectedModules", async (req, res) => {
     try {
         const SubjectNumber = (req.body.SubjectNumber)
