@@ -46,15 +46,10 @@ const signup = async (req, res) => {
       await newUser.save();
 
       res.status(201).json({
-        _id: newUser._id,
-        fullName: newUser.fullName,
-        username: newUser.username,
-        profilePic: newUser.profilePic,
+        token:token
       });
 
     
-
-     
     } else {
       res.status(400).json({ error: "Invalid user data" });
     }
@@ -71,6 +66,7 @@ const login = async (req, res) => {
     const user = await User.findOne({ username });
     const isPasswordCorrect = await bcrypt.compare(password, user?.password || "");
     
+    
     console.log("Inside Login")
 
     if (!user || !isPasswordCorrect) {
@@ -83,10 +79,7 @@ const login = async (req, res) => {
 
 
     res.status(200).json({
-      _id: user._id,
-      fullName: user.fullName,
-      username: user.username,
-      profilePic: user.profilePic,
+      token:token
     });
 
 
